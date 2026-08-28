@@ -1,10 +1,4 @@
-//
-//  PlannerView.swift
-//  vestiaire
 
-//  A week of days, each holding at most one outfit. Days are keyed by
-//  start-of-day so a plan is unambiguous regardless of what time it was made.
-//
 
 import SwiftUI
 import SwiftData
@@ -20,8 +14,7 @@ struct PlannerView: View {
     private let dayCount = 7
 
     @State private var forecast: [Date: DayForecast] = [:]
-    /// Wrapping the day keeps `sheet(item:)` happy without a retroactive
-    /// Identifiable conformance on Date, which Swift 5 language mode rejects.
+
     private struct PlannedDay: Identifiable {
         let date: Date
         var id: Date { date }
@@ -49,6 +42,7 @@ struct PlannerView: View {
                 header
 
                 ScrollView(showsIndicators: false) {
+                    WeatherCardView()
                     VStack(spacing: 12) {
                         ForEach(days, id: \.self) { day in
                             DayRow(
@@ -125,7 +119,7 @@ struct PlannerView: View {
         pickingDay = nil
     }
 
-    /// A deleted outfit nullifies its plans; drop those so the day reads as free.
+    
     private func tidyOrphanedPlans() {
         let orphans = plans.filter { $0.outfit == nil }
         guard !orphans.isEmpty else { return }

@@ -29,7 +29,23 @@ enum VestiaireStore {
     /// one is created rather than crashing on launch. That costs the local data,
     /// but the alternative is an app that won't start at all. Revisit before this
     /// ever ships with real users' wardrobes in it.
+    /// Bump this whenever a schema change can leave existing local data unusable.
+    /// The store is archived and rebuilt on the next launch, which is the only
+    /// reliable cure for rows written under the old shape.
+    ///
+    /// v2: PlannedOutfit gained a declared inverse. Rows written before it can
+    ///     reference a deleted Outfit, and merely assigning over that reference
+    ///     traps inside SwiftData's inverse bookkeeping.
+    private static let storeVersion = 2
+    private static let storeVersionKey = "vestiaire.storeVersion"
+
     static let container: ModelContainer = {
+        let defaults = UserDefaults.standard
+        if defaults.integer(forKey: storeVersionKey) != storeVersion {
+            archiveExistingStore()
+            defaults.set(storeVersion, forKey: storeVersionKey)
+        }
+
         if let container = try? ModelContainer(for: schema) {
             Category.seedDefaultsIfNeeded(in: container.mainContext)
             return container
