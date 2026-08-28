@@ -19,6 +19,8 @@ struct ItemDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
+    @State private var showingEdit = false
+
     var body: some View {
         ZStack {
             Color(.ivory).ignoresSafeArea()
@@ -33,6 +35,9 @@ struct ItemDetailView: View {
             }
         }
         .toolbar(.hidden, for: .navigationBar)
+        .sheet(isPresented: $showingEdit) {
+            AddItemView(item: item)
+        }
     }
 
     // MARK: Nav
@@ -49,11 +54,13 @@ struct ItemDetailView: View {
 
             Spacer()
 
-            // Wired up once the shared item form lands with AddItemView.
-            Text("Edit")
-                .font(.system(size: 15, weight: .medium))
-                .foregroundStyle(Color(.camel))
-                .opacity(0.4)
+            Button {
+                showingEdit = true
+            } label: {
+                Text("Edit")
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(Color(.camel))
+            }
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 8)
