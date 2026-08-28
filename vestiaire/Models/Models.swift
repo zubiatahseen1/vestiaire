@@ -1,16 +1,13 @@
-//
+
 //  Models.swift
 //  Vestiaire
 //
-//  The SwiftData layer, built from the finalized data-model notes:
+//  The SwiftData layer:
 //   • ClothingItem — name, category, color, cost, season, fabric, notes, photo,
 //                    timesWorn, dateAdded  (wish-list behaviour derived from category)
 //   • Category     — name, sortOrder, isDefault  (8 seeded defaults, user-editable later)
 //   • Outfit       — name, season, dateCreated, placements [{item, x, y, zIndex}]
-//
-//  Conventions are split one-@Model-per-file in most projects; they're grouped here
-//  so the data layer lands as a single drop-in. Split them later if you prefer.
-//
+
 
 import Foundation
 import SwiftData
@@ -36,7 +33,7 @@ final class Category {
     var isDefault: Bool
 
     // Items in this category. Deleting a category nullifies the link rather than
-    // deleting the garments (matters once category edit/delete ships in week 12/v2).
+    // deleting the garments.
     @Relationship(deleteRule: .nullify, inverse: \ClothingItem.category)
     var items: [ClothingItem] = []
 
@@ -46,7 +43,7 @@ final class Category {
         self.isDefault = isDefault
     }
 
-    /// Wish-list-ness is a property of the category, per the spec decision.
+    /// Wishlistness is a property of the category, per the spec decision.
     var isWishList: Bool { name == Category.wishListName }
 }
 
@@ -59,7 +56,7 @@ extension Category {
         "Shoes", "Bags", "Accessories", wishListName
     ]
 
-    /// Inserts the 8 default categories the first time the app runs (no-op afterward).
+    /// Inserts the 8 default categories the first time the app runs.
     @MainActor
     static func seedDefaultsIfNeeded(in context: ModelContext) {
         let existing = (try? context.fetchCount(FetchDescriptor<Category>())) ?? 0
@@ -117,21 +114,20 @@ final class ClothingItem {
 extension ClothingItem {
     var isWishList: Bool { category?.isWishList ?? false }
 
-    /// cost ÷ times worn. Nil for wish-list items (excluded) and items never worn.
+
     var costPerWear: Double? {
         guard !isWishList, timesWorn > 0 else { return nil }
         return cost / Double(timesWorn)
     }
 
-    /// The right-hand stat shown on the card after the category name.
-    /// Returns nil when there's nothing meaningful to show (wish-list items).
+
     var statText: String? {
         if isWishList { return nil }
         if let cpw = costPerWear { return String(format: "$%.2f/wear", cpw) }
         return "Not worn yet"
     }
 
-    /// The "$/wear" stat is camel-accented; "Not worn yet" stays muted.
+ 
     var statIsAccent: Bool { costPerWear != nil }
 }
 
@@ -154,9 +150,7 @@ final class Outfit {
     }
 }
 
-/// One garment positioned on the outfit canvas (x, y, stacking order).
-/// Placement modeling may be refined when the Outfit Builder is built (week 6–7);
-/// it's defined now so the schema is complete and avoids a later migration.
+
 @Model
 final class OutfitPlacement {
     var x: Double
