@@ -87,8 +87,8 @@ struct ItemDetailView: View {
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 16))
-        .padding(.horizontal, 24)
-        .padding(.top, 8)
+            .padding(.horizontal, 24)
+            .padding(.top, 8)
     }
 
     // MARK: Details
