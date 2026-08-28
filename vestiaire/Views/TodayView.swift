@@ -297,7 +297,8 @@ struct TodayView: View {
 
         let outfit: Outfit
         if let planned = existingPlan?.outfit, planned.name.hasPrefix(Self.autoPrefix) {
-            planned.placements.forEach { context.delete($0) }
+            // Assigning a fresh array is enough: .cascade deletes the old
+            // placements. Deleting them by hand too double-frees them.
             planned.season = derivedSeason()
             outfit = planned
         } else {

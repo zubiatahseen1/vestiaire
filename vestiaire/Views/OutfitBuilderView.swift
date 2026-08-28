@@ -334,7 +334,8 @@ struct OutfitBuilderView: View {
         if let outfit = existingOutfit {
             outfit.name = finalName
             outfit.season = season
-            outfit.placements.forEach { context.delete($0) }
+            // .cascade removes the replaced placements; deleting them explicitly
+            // as well double-frees them.
             outfit.placements = placed.map {
                 OutfitPlacement(item: $0.item, x: $0.x, y: $0.y, zIndex: $0.zIndex)
             }
