@@ -117,27 +117,26 @@ struct AddItemView: View {
 
     private var photoButton: some View {
         PhotosPicker(selection: $pickerItem, matching: .images) {
-            ZStack {
-                Color(.linen)
-                if let data = photoData, let uiImage = UIImage(data: data) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
-                } else {
-                    VStack(spacing: 8) {
-                        Text("＋")
-                            .font(.system(size: 32))
-                            .foregroundStyle(Color(.camel))
-                        Text("Add photo")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(Color(.stone))
+            Color(.linen)
+                .frame(height: 100)
+                .frame(maxWidth: .infinity)
+                .overlay {
+                    if let data = photoData, let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                    } else {
+                        VStack(spacing: 8) {
+                            Text("＋")
+                                .font(.system(size: 32))
+                                .foregroundStyle(Color(.camel))
+                            Text("Add photo")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundStyle(Color(.stone))
+                        }
                     }
                 }
-            }
-            .frame(height: 100)
-            .frame(maxWidth: .infinity)
-            .clipped()
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
         }
         .padding(.horizontal, 24)
         .padding(.top, 16)

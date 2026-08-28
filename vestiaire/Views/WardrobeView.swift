@@ -278,22 +278,21 @@ private struct ItemCard: View {
     var body: some View {
         VStack(spacing: 0) {
             // Photo, or the ◯ placeholder from the design.
-            ZStack {
-                Color(.linen)
-                if let data = item.photo, let uiImage = UIImage(data: data) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
-                } else {
-                    Image(systemName: "circle")
-                        .font(.system(size: 28, weight: .light))
-                        .foregroundStyle(Color(.stone))
+            Color(.linen)
+                .frame(height: 150)
+                .frame(maxWidth: .infinity)
+                .overlay {
+                    if let data = item.photo, let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                    } else {
+                        Image(systemName: "circle")
+                            .font(.system(size: 28, weight: .light))
+                            .foregroundStyle(Color(.stone))
+                    }
                 }
-            }
-            .frame(height: 150)
-            .frame(maxWidth: .infinity)
-            .clipped()
-            .clipShape(UnevenRoundedRectangle(topLeadingRadius: 12, topTrailingRadius: 12))
+                .clipShape(UnevenRoundedRectangle(topLeadingRadius: 12, topTrailingRadius: 12))
 
             // Meta: name, then "Category · stat"
             VStack(alignment: .leading, spacing: 4) {
