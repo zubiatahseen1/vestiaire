@@ -167,3 +167,23 @@ final class OutfitPlacement {
         self.zIndex = zIndex
     }
 }
+
+// MARK: - PlannedOutfit
+
+/// One outfit scheduled on one day. `date` is always normalised to the start of the
+/// day, so a day holds at most one plan; PlannerView enforces that on write.
+///
+/// Deleting an outfit nullifies the link rather than deleting the plan, so the
+/// planner shows the day as free again instead of losing the row.
+@Model
+final class PlannedOutfit {
+    var date: Date
+
+    @Relationship(deleteRule: .nullify)
+    var outfit: Outfit?
+
+    init(date: Date, outfit: Outfit? = nil) {
+        self.date = Calendar.current.startOfDay(for: date)
+        self.outfit = outfit
+    }
+}
