@@ -35,6 +35,19 @@ struct WardrobeView: View {
     }
 
     var body: some View {
+        NavigationStack {
+            content
+                .toolbar(.hidden, for: .navigationBar)
+                .navigationDestination(for: ClothingItem.self) { item in
+                    ItemDetailView(item: item)
+                }
+        }
+        .sheet(isPresented: $showingAddItem) {
+            AddItemView()
+        }
+    }
+
+    private var content: some View {
 
         ZStack(alignment: .bottomTrailing) {
             Color(.ivory).ignoresSafeArea()
@@ -50,10 +63,10 @@ struct WardrobeView: View {
                     } else {
                         LazyVGrid(columns: columns, spacing: 16) {
                             ForEach(filteredItems) { item in
-                                ItemCard(item: item)
-                                    .onTapGesture {
-                                        // TODO: navigate to ItemDetailView(item:) — week 5
-                                    }
+                                NavigationLink(value: item) {
+                                    ItemCard(item: item)
+                                }
+                                    .buttonStyle(.plain)
                                     .contextMenu {
                                         Button(role: .destructive) {
                                             delete(item)
@@ -71,9 +84,6 @@ struct WardrobeView: View {
             }
 
             fab
-        }
-        .sheet(isPresented: $showingAddItem){
-            AddItemView()
         }
     }
 
