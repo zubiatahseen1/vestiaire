@@ -19,6 +19,7 @@ struct TodayView: View {
     @Environment(\.modelContext) private var context
 
     @Query(sort: \ClothingItem.dateAdded, order: .reverse) private var items: [ClothingItem]
+    @Query private var plans: [PlannedOutfit]
 
     private let provider: WeatherProvider
 
@@ -279,12 +280,61 @@ struct TodayView: View {
         suggestion = picked
     }
 
+    /// Prefix used to recognise an outfit this screen created, so wearing again
+    /// after a shuffle updates it rather than leaving a trail of duplicates.
+    private static let autoPrefix = "Today — "
+
     private func wearThis() {
         for item in suggestion {
             item.timesWorn += 1
         }
+
+        // The suggestion is a loose set of pieces; the Planner points at Outfits.
+        // Save it as a real outfit so today's row has something to show.
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: .now)
+        let existingPlan = plans.first { calendar.isDate($0.date, inSameDayAs: today) }
+
+        let outfit: Outfit
+        if let planned = existingPlan?.outfit, planned.name.hasPrefix(Self.autoPrefix) {
+            planned.placements.forEach { context.delete($0) }
+            planned.season = derivedSeason()
+            outfit = planned
+        } else {
+            outfit = Outfit(name: autoName(), season: derivedSeason())
+            context.insert(outfit)
+        }
+
+        outfit.placements = suggestion.enumerated().map { index, item in
+            OutfitPlacement(
+                item: item,
+                x: 0.34 + Double(index % 3) * 0.16,
+                y: 0.26 + Double(index / 3) * 0.22,
+                zIndex: index
+            )
+        }
+
+        if let plan = existingPlan {
+            plan.outfit = outfit
+        } else {
+            context.insert(PlannedOutfit(date: today, outfit: outfit))
+        }
+
         try? context.save()
         withAnimation { loggedWear = true }
+    }
+
+    /// "Today — Aug 28"
+    private func autoName() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+        return Self.autoPrefix + formatter.string(from: .now)
+    }
+
+    /// If every piece shares one season the outfit takes it, otherwise all-season.
+    private func derivedSeason() -> Season {
+        let seasons = Set(suggestion.map(\.season)).subtracting([.allSeason])
+        return seasons.count == 1 ? seasons.first! : .allSeason
     }
 }
 

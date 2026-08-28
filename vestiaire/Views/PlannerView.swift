@@ -1,9 +1,7 @@
 //
 //  PlannerView.swift
 //  vestiaire
-//
-//  Built from Figma "05 Planner" (node 4:51).
-//
+
 //  A week of days, each holding at most one outfit. Days are keyed by
 //  start-of-day so a plan is unambiguous regardless of what time it was made.
 //
