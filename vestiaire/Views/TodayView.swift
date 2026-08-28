@@ -20,6 +20,7 @@ struct TodayView: View {
 
     @Query(sort: \ClothingItem.dateAdded, order: .reverse) private var items: [ClothingItem]
     @Query private var plans: [PlannedOutfit]
+    @Query private var outfits: [Outfit]
 
     private let provider: WeatherProvider
 
@@ -295,8 +296,16 @@ struct TodayView: View {
         let today = calendar.startOfDay(for: .now)
         let existingPlan = plans.first { calendar.isDate($0.date, inSameDayAs: today) }
 
+        // Only reuse an outfit the store still knows about. Reading a property off
+        // a model that has been deleted is a hard trap, not a nil — so check
+        // membership in the live query before touching .name.
+        let liveIDs = Set(outfits.map(\.persistentModelID))
+        let plannedOutfit = existingPlan?.outfit.flatMap {
+            liveIDs.contains($0.persistentModelID) ? $0 : nil
+        }
+
         let outfit: Outfit
-        if let planned = existingPlan?.outfit, planned.name.hasPrefix(Self.autoPrefix) {
+        if let planned = plannedOutfit, planned.name.hasPrefix(Self.autoPrefix) {
             // Assigning a fresh array is enough: .cascade deletes the old
             // placements. Deleting them by hand too double-frees them.
             planned.season = derivedSeason()
