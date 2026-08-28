@@ -1,17 +1,3 @@
-//
-//  OutfitBuilderView.swift
-//  vestiaire
-//
-//  Built from Figma "07 Outfit Builder" (node 8:83).
-//
-//  Pieces are arranged on a free canvas. Two decisions worth knowing:
-//
-//  • Placement x/y are stored NORMALISED (0...1) as a fraction of the canvas,
-//    not as absolute points. Same Double columns, so no schema change — but an
-//    outfit now looks the same on any screen width instead of drifting.
-//  • Nothing is written to SwiftData until Save, so cancelling leaves no debris.
-//    Pieces live in a local `Placed` array while you're arranging them.
-//
 
 import SwiftUI
 import SwiftData

@@ -79,7 +79,7 @@ struct TodayView: View {
         .padding(.bottom, 8)
     }
 
-    /// "TUESDAY, JUNE 9"
+    
     private var dateLine: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMMM d"
@@ -324,9 +324,15 @@ struct TodayView: View {
             )
         }
 
-        if let plan = existingPlan {
+        if let plan = existingPlan, plannedOutfit != nil || plan.outfit == nil {
+            // Safe to reassign: the plan either points at a live outfit or at
+            // nothing. Assigning over a *deleted* outfit traps inside SwiftData's
+            // inverse bookkeeping, so that case drops the stale plan instead.
             plan.outfit = outfit
         } else {
+            if let stale = existingPlan {
+                context.delete(stale)
+            }
             context.insert(PlannedOutfit(date: today, outfit: outfit))
         }
 

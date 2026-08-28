@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9B4FC1B9309CB1AC007B02C2 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4FC1B8309CB1AC007B02C2 /* LocationManager.swift */; };
+		9B4FC1BB309CB1BD007B02C2 /* WeatherModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4FC1BA309CB1BD007B02C2 /* WeatherModels.swift */; };
+		9B4FC1BD309CB1CA007B02C2 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4FC1BC309CB1CA007B02C2 /* WeatherService.swift */; };
+		9B4FC1BF309CB20B007B02C2 /* WeatherCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4FC1BE309CB20B007B02C2 /* WeatherCardView.swift */; };
+		9B4FC1C1309CB22D007B02C2 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4FC1C0309CB22D007B02C2 /* WeatherViewModel.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		9BE0A4582FC9DC3E000685CC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,14 +32,32 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9B4FC1B8309CB1AC007B02C2 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		9B4FC1BA309CB1BD007B02C2 /* WeatherModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherModels.swift; sourceTree = "<group>"; };
+		9B4FC1BC309CB1CA007B02C2 /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
+		9B4FC1BE309CB20B007B02C2 /* WeatherCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCardView.swift; sourceTree = "<group>"; };
+		9B4FC1C0309CB22D007B02C2 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
 		9BE0A44A2FC9DC3C000685CC /* vestiaire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vestiaire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BE0A4572FC9DC3E000685CC /* vestiaireTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = vestiaireTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BE0A4612FC9DC3E000685CC /* vestiaireUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = vestiaireUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9B4FC1B6309CB0F4007B02C2 /* Exceptions for "vestiaire" folder in "vestiaire" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9BE0A4492FC9DC3C000685CC /* vestiaire */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9BE0A44C2FC9DC3C000685CC /* vestiaire */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9B4FC1B6309CB0F4007B02C2 /* Exceptions for "vestiaire" folder in "vestiaire" target */,
+			);
 			path = vestiaire;
 			sourceTree = "<group>";
 		};
@@ -72,9 +98,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9B4FC1B7309CB15B007B02C2 /* Weather */ = {
+			isa = PBXGroup;
+			children = (
+				9B4FC1B8309CB1AC007B02C2 /* LocationManager.swift */,
+				9B4FC1BA309CB1BD007B02C2 /* WeatherModels.swift */,
+				9B4FC1BC309CB1CA007B02C2 /* WeatherService.swift */,
+				9B4FC1BE309CB20B007B02C2 /* WeatherCardView.swift */,
+				9B4FC1C0309CB22D007B02C2 /* WeatherViewModel.swift */,
+			);
+			path = Weather;
+			sourceTree = "<group>";
+		};
 		9BE0A4412FC9DC3C000685CC = {
 			isa = PBXGroup;
 			children = (
+				9B4FC1B7309CB15B007B02C2 /* Weather */,
 				9BE0A44C2FC9DC3C000685CC /* vestiaire */,
 				9BE0A45A2FC9DC3E000685CC /* vestiaireTests */,
 				9BE0A4642FC9DC3E000685CC /* vestiaireUITests */,
@@ -236,6 +275,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B4FC1BB309CB1BD007B02C2 /* WeatherModels.swift in Sources */,
+				9B4FC1C1309CB22D007B02C2 /* WeatherViewModel.swift in Sources */,
+				9B4FC1B9309CB1AC007B02C2 /* LocationManager.swift in Sources */,
+				9B4FC1BD309CB1CA007B02C2 /* WeatherService.swift in Sources */,
+				9B4FC1BF309CB20B007B02C2 /* WeatherCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,6 +444,7 @@
 				DEVELOPMENT_TEAM = 8YGZ92V4WK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = vestiaire/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -432,6 +477,7 @@
 				DEVELOPMENT_TEAM = 8YGZ92V4WK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = vestiaire/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
