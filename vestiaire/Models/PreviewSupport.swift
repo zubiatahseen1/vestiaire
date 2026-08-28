@@ -21,6 +21,7 @@ enum PreviewData {
             let config = ModelConfiguration(isStoredInMemoryOnly: true)
             let container = try ModelContainer(
                 for: ClothingItem.self, Category.self, Outfit.self, OutfitPlacement.self,
+                PlannedOutfit.self,
                 configurations: config
             )
             let context = container.mainContext

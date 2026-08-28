@@ -21,6 +21,9 @@ struct MainTabView: View {
 
             TodayView()
                 .tabItem { Label("Today", systemImage: "sun.max") }
+
+            PlannerView()
+                .tabItem { Label("Planner", systemImage: "calendar") }
         }
         .tint(Color(.ink))
     }

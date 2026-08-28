@@ -3,7 +3,6 @@
 //  vestiaire
 //
 //  Created by Zubia Tahseen on 2026-06-11.
-//  Built from Figma "06 Outfits" (node 8:19).
 //
 
 import SwiftUI

@@ -28,7 +28,8 @@ enum VestiaireStore {
     static let container: ModelContainer = {
         do {
             let container = try ModelContainer(
-                for: ClothingItem.self, Category.self, Outfit.self, OutfitPlacement.self
+                for: ClothingItem.self, Category.self, Outfit.self, OutfitPlacement.self,
+                PlannedOutfit.self
             )
             Category.seedDefaultsIfNeeded(in: container.mainContext)
             return container
