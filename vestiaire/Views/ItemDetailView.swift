@@ -69,22 +69,24 @@ struct ItemDetailView: View {
     // MARK: Hero photo
 
     private var hero: some View {
-        ZStack {
-            Color(.linen)
-            if let data = item.photo, let uiImage = UIImage(data: data) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
-            } else {
-                Image(systemName: "circle")
-                    .font(.system(size: 28, weight: .light))
-                    .foregroundStyle(Color(.stone))
+        // The photo goes in an .overlay, not a ZStack: a .scaledToFill image
+        // reports its full scaled width during layout, which would stretch the
+        // whole screen sideways. An overlay is sized by its parent, so it can't.
+        Color(.linen)
+            .frame(height: 360)
+            .frame(maxWidth: .infinity)
+            .overlay {
+                if let data = item.photo, let uiImage = UIImage(data: data) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    Image(systemName: "circle")
+                        .font(.system(size: 28, weight: .light))
+                        .foregroundStyle(Color(.stone))
+                }
             }
-        }
-        .frame(height: 360)
-        .frame(maxWidth: .infinity)
-        .clipped()
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
         .padding(.horizontal, 24)
         .padding(.top, 8)
     }
