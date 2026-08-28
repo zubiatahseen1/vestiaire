@@ -143,6 +143,14 @@ final class Outfit {
     @Relationship(deleteRule: .cascade)
     var placements: [OutfitPlacement] = []
 
+    // Days this outfit is planned on. This inverse matters: without it SwiftData
+    // does not reliably clear PlannedOutfit.outfit when the outfit is deleted, and
+    // the planner is left holding an invalidated model — which crashed "Wear this"
+    // with "backing data could no longer be found in the store". Cascading here
+    // frees the day instead.
+    @Relationship(deleteRule: .cascade, inverse: \PlannedOutfit.outfit)
+    var plannedDays: [PlannedOutfit] = []
+
     init(name: String, season: Season = .allSeason, dateCreated: Date = .now) {
         self.name = name
         self.season = season
