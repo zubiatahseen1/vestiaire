@@ -132,9 +132,10 @@ struct ItemDetailView: View {
     }
 
     /// Wish-list pieces and never-worn pieces have no meaningful cost per wear.
+    /// Always two decimals here — "$8.00" reads as a rate, "$8" reads as a price.
     private var perWearText: String {
         guard let cpw = item.costPerWear else { return "—" }
-        return money(cpw)
+        return String(format: "$%.2f", cpw)
     }
 
     /// "$320" for whole amounts, "$3.20" otherwise — matches the design.
