@@ -3,9 +3,8 @@
 //  Vestiaire
 //
 //  The weather layer, behind a protocol so the UI never knows where readings come
-//  from. Today that's MockWeatherProvider; swapping in WeatherKit or OpenWeather
-//  later means writing one more conformance and changing one line in each view —
-//  no view code moves.
+//  from. The app uses OpenMeteoWeatherProvider (live, location-based); the mock
+//  stays for previews and tests.
 //
 
 import Foundation
@@ -35,11 +34,11 @@ struct DayForecast: Identifiable {
 }
 
 protocol WeatherProvider {
-    func current() async -> WeatherSnapshot
-    func forecast(days: Int) async -> [DayForecast]
+    func current() async throws -> WeatherSnapshot
+    func forecast(days: Int) async throws -> [DayForecast]
 }
 
-/// Stand-in readings until a real API is wired up. Deterministic per calendar day,
+/// Stand-in readings for previews and tests. Deterministic per calendar day,
 /// so the screen doesn't flicker between different weather on every redraw, but
 /// still changes day to day rather than looking frozen.
 struct MockWeatherProvider: WeatherProvider {

@@ -4,7 +4,9 @@ import CoreLocation
 @MainActor
 final class LocationManager: NSObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
-    private var continuation: CheckedContinuation<CLLocationCoordinate2D, Error>?
+    /// Everyone waiting on the current request. Today, Planner and the weather
+    /// card can all ask at once on launch; they share one location fix.
+    private var waiters: [CheckedContinuation<CLLocationCoordinate2D, Error>] = []
 
     override init() {
         super.init()
@@ -14,10 +16,9 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
 
     /// Asks for permission if needed, then returns the device's current coordinate once.
     func currentCoordinate() async throws -> CLLocationCoordinate2D {
-        guard continuation == nil else { throw WeatherError.requestInProgress }
-
-        return try await withCheckedThrowingContinuation { continuation in
-            self.continuation = continuation
+        try await withCheckedThrowingContinuation { continuation in
+            waiters.append(continuation)
+            guard waiters.count == 1 else { return }   // a request is already in flight
 
             switch manager.authorizationStatus {
             case .notDetermined:
@@ -31,8 +32,9 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
 
     private func finish(_ result: Result<CLLocationCoordinate2D, Error>) {
-        continuation?.resume(with: result)
-        continuation = nil
+        let pending = waiters
+        waiters = []
+        pending.forEach { $0.resume(with: result) }
     }
 
     // MARK: - CLLocationManagerDelegate
@@ -40,7 +42,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
         Task { @MainActor in
-            guard self.continuation != nil else { return }
+            guard !self.waiters.isEmpty else { return }
             switch status {
             case .authorizedWhenInUse, .authorizedAlways:
                 self.manager.requestLocation()
@@ -61,7 +63,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
 
     nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         Task { @MainActor in
-            self.finish(.failure(error))
+            self.finish(.failure(WeatherError.locationUnavailable))
         }
     }
 }

@@ -5,7 +5,7 @@
 //  Created by Zubia Tahseen on 2026-06-11.
 //  Built from Figma "04 Today Suggestion" (node 4:2).
 //
-//  Readings come from a WeatherProvider (currently mocked). The suggestion is
+//  Readings come from a WeatherProvider (live Open-Meteo by default). The suggestion is
 //  driven by the *feels like* temperature rather than the actual one — the whole
 //  point of the app.
 //
@@ -25,10 +25,11 @@ struct TodayView: View {
     private let provider: WeatherProvider
 
     @State private var weather: WeatherSnapshot?
+    @State private var weatherError: String?
     @State private var suggestion: [ClothingItem] = []
     @State private var loggedWear = false
 
-    init(provider: WeatherProvider = MockWeatherProvider()) {
+    init(provider: WeatherProvider = OpenMeteoWeatherProvider.shared) {
         self.provider = provider
     }
 
@@ -53,10 +54,7 @@ struct TodayView: View {
             }
         }
         .task {
-            if weather == nil {
-                weather = await provider.current()
-                makeSuggestion()
-            }
+            if weather == nil { await loadWeather() }
         }
     }
 
@@ -91,9 +89,10 @@ struct TodayView: View {
     private var weatherCard: some View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(weather?.place ?? "Loading weather…")
+                Text(weather?.place ?? weatherError ?? "Loading weather…")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(Color(.mist))
+                    .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 8) {
                     Text(weather.map { "\($0.temperature)°" } ?? "—")
@@ -110,8 +109,16 @@ struct TodayView: View {
 
             Spacer(minLength: 0)
 
-            Text(weather?.symbol ?? "")
-                .font(.system(size: 36))
+            if weather == nil, weatherError != nil {
+                Button("Retry") {
+                    Task { await loadWeather() }
+                }
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(Color(.camel))
+            } else {
+                Text(weather?.symbol ?? "")
+                    .font(.system(size: 36))
+            }
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 20)
@@ -232,6 +239,19 @@ struct TodayView: View {
         .padding(.horizontal, 40)
     }
 
+    // MARK: Loading
+
+    private func loadWeather() async {
+        weatherError = nil
+        do {
+            weather = try await provider.current()
+        } catch {
+            weatherError = error.localizedDescription
+        }
+        // Suggest either way; without a reading it just skips the outerwear rule.
+        makeSuggestion()
+    }
+
     // MARK: Suggestion logic
 
     private var currentSeason: Season {
@@ -245,7 +265,9 @@ struct TodayView: View {
 
     /// The line under the heading, written from how it actually feels outside.
     private var reason: String {
-        guard let feels = weather?.feelsLike else { return "Checking the weather…" }
+        guard let feels = weather?.feelsLike else {
+            return weatherError == nil ? "Checking the weather…" : "Picked from your wardrobe for the season"
+        }
         switch feels {
         case ..<0:   return "Bundle up — well below freezing"
         case 0..<8:  return "Layer properly — cold out there"
@@ -357,6 +379,6 @@ struct TodayView: View {
 // MARK: - Preview
 
 #Preview {
-    TodayView()
+    TodayView(provider: MockWeatherProvider())
         .modelContainer(PreviewData.container)
 }

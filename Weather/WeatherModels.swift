@@ -111,6 +111,34 @@ struct WeatherCondition {
         }
     }
 
+    /// Emoji used by TodayView's dark card, matching the design.
+    var emoji: String {
+        switch code {
+        case 0: "☀️"
+        case 1, 2: "⛅"
+        case 3: "☁️"
+        case 45, 48: "🌫️"
+        case 51, 53, 55, 80, 81, 82: "🌦️"
+        case 56, 57, 61, 63, 65, 66, 67: "🌧️"
+        case 71, 73, 75, 77, 85, 86: "❄️"
+        case 95, 96, 99: "⛈️"
+        default: "🌡️"
+        }
+    }
+
+    /// One-word label for the Planner's day rows: "sun", "cloud", "rain"…
+    var short: String {
+        switch code {
+        case 0, 1: "sun"
+        case 2, 3: "cloud"
+        case 45, 48: "fog"
+        case 51...67, 80...82: "rain"
+        case 71...77, 85, 86: "snow"
+        case 95...99: "storm"
+        default: "—"
+        }
+    }
+
     var isSnowy: Bool {
         [71, 73, 75, 77, 85, 86].contains(code)
     }

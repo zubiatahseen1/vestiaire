@@ -2,14 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>LSHandlerRank</key>
-			<string>Default</string>
-			<key>NSLocationWhenInUseUsageDescription</key>
-			<string>Vestiaire uses your location to show today's weather and suggest what to wear</string>
-		</dict>
-	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Vestiaire uses your location to show today's weather and suggest what to wear</string>
 </dict>
 </plist>
