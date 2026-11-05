@@ -1,4 +1,3 @@
-import CoreLocation
 import Foundation
 import Observation
 
@@ -10,8 +9,7 @@ final class WeatherViewModel {
     private(set) var errorMessage: String?
     private(set) var isLoading = false
 
-    @ObservationIgnored private let locationManager = LocationManager()
-    @ObservationIgnored private let service = WeatherService()
+    @ObservationIgnored private let provider = OpenMeteoWeatherProvider.shared
 
     func load() async {
         guard !isLoading else { return }
@@ -20,11 +18,7 @@ final class WeatherViewModel {
         defer { isLoading = false }
 
         do {
-            let coordinate = try await locationManager.currentCoordinate()
-            weather = try await service.fetchWeather(
-                latitude: coordinate.latitude,
-                longitude: coordinate.longitude
-            )
+            weather = try await provider.response()
         } catch {
             errorMessage = error.localizedDescription
         }

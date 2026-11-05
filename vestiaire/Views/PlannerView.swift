@@ -22,7 +22,7 @@ struct PlannerView: View {
 
     @State private var pickingDay: PlannedDay?
 
-    init(provider: WeatherProvider = MockWeatherProvider()) {
+    init(provider: WeatherProvider = OpenMeteoWeatherProvider.shared) {
         self.provider = provider
     }
 
@@ -43,6 +43,9 @@ struct PlannerView: View {
 
                 ScrollView(showsIndicators: false) {
                     WeatherCardView()
+                        .padding(.horizontal, 24)
+                        .padding(.top, 16)
+
                     VStack(spacing: 12) {
                         ForEach(days, id: \.self) { day in
                             DayRow(
@@ -60,8 +63,10 @@ struct PlannerView: View {
             }
         }
         .task {
-            let upcoming = await provider.forecast(days: dayCount)
-            forecast = Dictionary(uniqueKeysWithValues: upcoming.map { ($0.date, $0) })
+            // No forecast (offline, location off) just leaves the weather line blank.
+            if let upcoming = try? await provider.forecast(days: dayCount) {
+                forecast = Dictionary(upcoming.map { ($0.date, $0) }, uniquingKeysWith: { first, _ in first })
+            }
             tidyOrphanedPlans()
         }
         .sheet(item: $pickingDay) { selection in
@@ -289,6 +294,6 @@ private struct OutfitPicker: View {
 // MARK: - Preview
 
 #Preview {
-    PlannerView()
+    PlannerView(provider: MockWeatherProvider())
         .modelContainer(PreviewData.container)
 }
